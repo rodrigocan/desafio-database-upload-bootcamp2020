@@ -5,15 +5,13 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export default class AddForeignKeyToColumnCategoryInTransactionsTable1587686017103
+export default class AddCategoryIdToTransactions1587931107319
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropColumn('transactions', 'category');
-
     await queryRunner.addColumn(
       'transactions',
       new TableColumn({
-        name: 'category',
+        name: 'category_id',
         type: 'uuid',
         isNullable: true,
       }),
@@ -22,27 +20,18 @@ export default class AddForeignKeyToColumnCategoryInTransactionsTable15876860171
     await queryRunner.createForeignKey(
       'transactions',
       new TableForeignKey({
-        name: 'TransactionCategory',
-        columnNames: ['category'],
+        columnNames: ['category_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'categories',
-        onDelete: 'SET NULL',
+        name: 'TransactionCategory',
         onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey('transactions', 'TransactionCategory');
-
-    await queryRunner.dropColumn('transactions', 'category');
-
-    await queryRunner.addColumn(
-      'transactions',
-      new TableColumn({
-        name: 'category',
-        type: 'varchar',
-      }),
-    );
+    await queryRunner.dropColumn('transactions', 'category_id');
   }
 }
